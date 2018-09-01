@@ -4,7 +4,8 @@ const path = require('path');
 const container = dependable.container();
 
 const simpleDependecies = [
-    ['_', 'lodash']
+    ['_', 'lodash'],
+    ['passport', 'passport']
 ];
 
 simpleDependecies.forEach(function(val){
@@ -21,6 +22,22 @@ container.register('container', function(){
 });
 
 module.exports = container;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
