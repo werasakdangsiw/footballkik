@@ -10,16 +10,19 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const passport = require('passport');
 
+const compression = require('compression')
+const helmet = require('helmet')
+
 
 
 const container = require('./container');
 
 
 
-container.resolve(function (users) {
+container.resolve(function (users,_) {
 
-   mongoose.Promise = global.Promise;
-   mongoose.connect('mongodb://localhost/footballkik', {useMongoClient: true});
+    mongoose.Promise = global.Promise;
+    mongoose.connect('mongodb://admin:passw0rd@ds145562.mlab.com:45562/footballkik', { useMongoClient: true });
 
     const app = SetupExpress();
 
@@ -43,6 +46,14 @@ container.resolve(function (users) {
     }
 
     function ConfigureExpress(app) {
+
+        app.use(compression());
+        app.use(helmet());
+
+
+        require('./passport/passport-local');
+        require('./passport/passport-facebook');
+
         app.use(express.static('public'));
         app.use(cookieParser());
         app.set('view engine', 'ejs');
@@ -55,16 +66,16 @@ container.resolve(function (users) {
             secret: 'addyourownsecretkey',
             resave: false,
             saveUninitialized: false,
-            store: new MongoStore({ mongooseConnection: mongoose.connection})
+            store: new MongoStore({ mongooseConnection: mongoose.connection })
         }));
 
-         app.use(flash());
+        app.use(flash());
 
         app.use(passport.initialize());
         app.use(passport.session());
-        
 
-        //app.locals._ = _;
+
+        app.locals._ = _;
     }
 
 });

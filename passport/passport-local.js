@@ -53,8 +53,8 @@ passport.use('local.login', new LocalStrategy({
         }
         
         const messages = [];
-        if(user){
-            
+        if(!user || !user.validUserPassword(password)){
+            messages.push('Email Does Not Exist or Password is Invalid');
             return done(null, false, req.flash('error', messages));
         }
         
