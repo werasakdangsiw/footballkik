@@ -5,17 +5,13 @@ module.exports = function (_, passport, User) {
         SetRouting: function (router) {
             router.get('/', this.indexPage);
             router.get('/signup', this.getSignUp);
-            router.get('/home', this.getHome);
+           
             router.get('/auth/facebook', this.getFacebookLogin);
             router.get('/auth/facebook/callback', this.facebookLogin);
 
 
             router.post('/', User.LoginValidation, this.postLogin);
             router.post('/signup', User.SignUpValidation, this.postSignUp);
-        },
-
-        getHome: function (req, res) {
-            return res.render('home');
         },
 
         indexPage: function (req, res) {
