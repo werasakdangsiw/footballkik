@@ -29,7 +29,7 @@ module.exports = function (async, Club, _) {
                 
                 const countrySort = _.sortBy(res2,'_id');
                 
-                res.render('home', { title: 'Footballkik - Home',user: req.user, data: dataChunk ,country:countrySort});
+                res.render('home', { title: 'Footballfanclub - Home',user: req.user, data: dataChunk ,country:countrySort});
             })
         },
         logout: function(req, res){

@@ -9,7 +9,7 @@ module.exports = function () {
 
         groupPage: function (req, res) {
             const name = req.params.name;
-            res.render('groupchat/group', { title: 'Footballkik - Group', user: req.user, groupName: name })
+            res.render('groupchat/group', { title: 'Footballfanclub - Group', user: req.user, groupName: name })
         },
         logout: function(req, res){
             req.logout();
