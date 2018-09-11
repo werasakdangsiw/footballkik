@@ -3,20 +3,32 @@ const bcrypt = require('bcrypt-nodejs');
 
 
 const userSchema = mongoose.Schema({
-    username: {type: String, unique: true, default: ''},
-    fullname: {type: String, unique: true, default: ''},
-    email: {type: String, unique: true},
-    password: {type: String, default: ''},
-    userImage: {type: String, default: 'defaultPic.png'},
-    facebook: {type: String, default: ''},
-    fbTokens: Array    
+    username: { type: String, unique: true, default: '' },
+    fullname: { type: String, unique: true, default: '' },
+    email: { type: String, unique: true },
+    password: { type: String, default: '' },
+    userImage: { type: String, default: 'defaultPic.png' },
+    facebook: { type: String, default: '' },
+    fbTokens: Array,
+    sentRequest: [{
+        username: { type: String, default: '' }
+    }],
+    request: [{
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        username: { type: String, default: '' }
+    }],
+    friendsList: [{
+        friendId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        friendName: { type: String, default: '' }
+    }],
+    totalRequest: { type: Number, default: 0 }
 });
 
-userSchema.methods.encryptPassword = function(password){
+userSchema.methods.encryptPassword = function (password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
 };
 
-userSchema.methods.validUserPassword = function(password){
+userSchema.methods.validUserPassword = function (password) {
     return bcrypt.compareSync(password, this.password);
 };
 

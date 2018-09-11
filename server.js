@@ -9,6 +9,8 @@ const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const passport = require('passport');
+const socketIO = require('socket.io');
+const { Users } = require('./helpers/UsersClass');
 
 const compression = require('compression')
 const helmet = require('helmet')
@@ -19,35 +21,44 @@ const container = require('./container');
 
 
 
-container.resolve(function (users,_, admin,home) {
+container.resolve(function (users, _, admin, home, group,results) {
 
     mongoose.Promise = global.Promise;
-    mongoose.connect('mongodb://admin:passw0rd@ds145562.mlab.com:45562/footballkik', { useMongoClient: true });
+    //mongoose.connect('mongodb://admin:passw0rd@ds145562.mlab.com:45562/footballkik', { useMongoClient: true });
+
+    mongoose.connect(process.env.MONGODB_URI, { useMongoClient: true });
+    //console.log(process.env.MONGODB_URI);
 
     const app = SetupExpress();
 
     function SetupExpress() {
         const app = express();
         const server = http.createServer(app);
-        server.listen(3000, function () {
+        const io = socketIO(server);
+        server.listen(process.env.PORT || 3000, function () {
             console.log('Listening on port 3000')
         });
-        ConfigureExpress(app);
+        ConfigureExpress(app, io);
 
+        require('./socket/groupchat')(io, Users);
+        require('./socket/friend')(io);
+ 
         //Setup router
         const router = require('express-promise-router')();
         users.SetRouting(router);
         admin.SetRouting(router);
         home.SetRouting(router);
+        group.SetRouting(router);
+        results.SetRouting(router);
 
         app.use(router);
 
-        app.use(function (req, res) {
+       app.use(function (req, res) {
             res.render('404');
         });
     }
 
-    function ConfigureExpress(app) {
+    function ConfigureExpress(app, io) {
 
         app.use(compression());
         app.use(helmet());
@@ -65,7 +76,8 @@ container.resolve(function (users,_, admin,home) {
         app.use(validator());
 
         app.use(session({
-            secret: 'addyourownsecretkey',
+            //secret: 'addyourownsecretkey',
+            secret: process.env.SECRET_KEY,
             resave: false,
             saveUninitialized: false,
             store: new MongoStore({ mongooseConnection: mongoose.connection })
