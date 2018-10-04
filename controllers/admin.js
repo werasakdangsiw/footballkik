@@ -1,5 +1,4 @@
 
-
 module.exports = function (formidable, Club, aws) {
     return {
         SetRouting: function (router) {
@@ -21,16 +20,16 @@ module.exports = function (formidable, Club, aws) {
             })
         },
         uploadFile: (req, res) => {
-            const form = formidable.IncomingForm();
-            // form.uploadDir = path.join(__dirname, '../public/uploads');
+            const form = new formidable.IncomingForm();
+             //form.uploadDir = path.join(__dirname, '../public/uploads');
 
 
-            form.on('file', (field, file) => {
-                // fs.rename(file.path, path.join(form.uploadDir, file.name), (err) => {
-                //     if (err) throw err;
-                //     console.log('File rename successfully');
-                // })
-            });
+            // form.on('file', (field, file) => {
+            //      fs.rename(file.path, path.join(form.uploadDir, file.name), (err) => {
+            //          if (err) throw err;
+            //         console.log('File rename successfully');
+            //      })
+            // });
             form.on('error', (err) => {
                 //console.log('err')
             });
